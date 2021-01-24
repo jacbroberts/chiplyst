@@ -26,9 +26,9 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{{ url_for('home') }}">Blog</a>
-              <a class="nav-item nav-link" href="{{ url_for('lists') }}">Lists</a>
-              <a class="nav-item nav-link" href="{{ url_for('groups') }}">Groups</a>
+              <a class="nav-item nav-link" href="{{ url_for('home') }}">Blogs</a>
+              <a class="nav-item nav-link" href="{{ url_for('lists') }}">Your Blogs</a>
+              <!--<a class="nav-item nav-link" href="{{ url_for('groups') }}">Groups</a> -->
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
@@ -59,19 +59,13 @@
           {% endwith %}
           {% block content %}{% endblock %}
         </div>
-        <div class="col-md-4">
-          <div class="content-section">
-            <h3>Our Sidebar</h3>
-            <p class='text-muted'>You can put any information here you'd like.
-              <ul class="list-group">
-                <li class="list-group-item list-group-item-light">Latest Posts</li>
-                <li class="list-group-item list-group-item-light">Announcements</li>
-                <li class="list-group-item list-group-item-light">Calendars</li>
-                <li class="list-group-item list-group-item-light">etc</li>
-              </ul>
-            </p>
-          </div>
-        </div>
+
+      </div>
+      <div>
+        <footer> <small>&copy; Copyright 2021, Jacob Roberts. 
+          <a class="nav-item nav-link" href="{{ url_for('terms_and_conditions')}}">Terms and Conditions</a>
+          <a class="nav-item nav-link" href="{{ url_for('privacy_policy')}}">Privacy Policys</a>
+        </footer>
       </div>
     </main>
 

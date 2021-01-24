@@ -205,6 +205,13 @@ def lists():
         .paginate(page=page, per_page=5)
     return render_template('lists.html', title='Chips', lists=lists, user=user)
 
+@app.route('/privacy_policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+@app.route('/terms_and_conditions')
+def terms_and_conditions():
+    return render_template('terms_and_conditions.html')
 
 
 @app.route("/list/new", methods=['GET','POST'])
