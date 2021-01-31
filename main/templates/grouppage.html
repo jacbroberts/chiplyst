@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1> {{ groupinfo.groupname }}</h1>
+    {% for member in groupinfo.member %}
+        <h4>Members:</h4>
+        <table>
+            <tr>
+                <th>Member Name</th>
+                <th>Member Level</th>
+                
+            </tr>
+            <tr>
+                <td>{{member.username}}</td>
+                <td>{{member.user_level}}</td>
+            </tr>
+        </table>
+        <p></p>
+    {%endfor%}
+{% endblock content %}

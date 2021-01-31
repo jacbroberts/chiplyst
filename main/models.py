@@ -3,6 +3,12 @@ from main import app, db, bcrypt, login_manager, app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+memberships = db.Table('memberships',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('groups_id',db.Integer, db.ForeignKey('groups.id')),
+    db.Column('user_level', db.String, default='0')
+    )
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -10,16 +16,17 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
-    email= db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
-    posts = db.relationship('Post', backref='author', lazy=True)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    bio = db.Column(db.String(255), nullable=False, default="")
+    posts = db.relationship('Post', backref='author',lazy=True)
     lists = db.relationship('Lists', backref='author',lazy=True)
-    group_memberships = db.relationship('Groups',backref=db.backref('user_memberships',lazy='select'))
+    groups = db.relationship('Groups', secondary=memberships, backref=db.backref('member', lazy = 'dynamic'))
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        return s.dumps({'user_id':self.id}).decode('utf-8')
 
     @staticmethod
     def verify_reset_token(token):
@@ -31,9 +38,24 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+        return f"User('{self.username}', '{self.email}', '{self.image_file}','{self.groups}')"
 
-class Post(db.Model):
+class Groups(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    groupname = db.Column(db.String(40), unique=True, nullable=False)
+    group_admin = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    group_access = db.Column(db.Boolean, nullable=False)
+    group_profilepic = db.Column(db.String(20), nullable=False, default='default_group.png')
+    group_bio = db.Column(db.String(255), nullable=False, default = "")
+    members = db.relationship(User)
+
+    def __repr__(self):
+        return f"Groups('{self.groupname}','{self.group_admin}',)"
+
+class GroupRoles(db.Model):
+    pass
+
+class Lists(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -43,19 +65,7 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post('{self.title}','{self.date_posted}')"
 
-
-class Groups(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    groupname = db.Column(db.String(40), unique=True, nullable=False)
-    group_admin = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-group_memberships = db.Table('group_memberships',
-db.Column('group_id', db.Integer,db.ForeignKey('groups.id'),primary_key=True),
-db.Column('user_id',db.Integer,db.ForeignKey('user.id'),primary_key=True)
-)
-
-
-class Lists(db.Model):
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+
+
+{% block content %}
+<h1> User Directory</h1>
+
+{% for user in users.items %}
+        <article class="media content-section">
+
+          <div class="media-body">
+            <div class="article-metadata">
+              <img alt="profile picture" class="rounded-circle article-image" width="100" src="{{ url_for('static', filename='profilepics/'+ user.image_file)}}">
+              <a class="mr-2" href="{{ url_for('user_posts', username=user.username)}}">{{ user.username }}</a>
+            </div>
+            <p>{{user.bio}}</p>
+          </div>
+        </article>
+    {% endfor %}
+
+{% endblock %}

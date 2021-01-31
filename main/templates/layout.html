@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
+    <link rel="icon" href="/static/icon.jpg"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -28,7 +28,8 @@
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for('home') }}">Blogs</a>
               <a class="nav-item nav-link" href="{{ url_for('lists') }}">Your Blogs</a>
-              <!--<a class="nav-item nav-link" href="{{ url_for('groups') }}">Groups</a> -->
+              <a class="nav-item nav-link" href="{{ url_for('finduser') }}">User Directory</a>
+              <a class="nav-item nav-link" href="{{ url_for('groups') }}">Groups</a> 
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
@@ -61,13 +62,19 @@
         </div>
 
       </div>
-      <div>
-        <footer> <small>&copy; Copyright 2021, Jacob Roberts. 
-          <a class="nav-item nav-link" href="{{ url_for('terms_and_conditions')}}">Terms and Conditions</a>
-          <a class="nav-item nav-link" href="{{ url_for('privacy_policy')}}">Privacy Policys</a>
-        </footer>
-      </div>
     </main>
+      <footer>
+      <div class="footer">
+        <small>
+          <table>
+            <th>&copy; Copyright 2021, Jacob Roberts.</th>
+            <th><a class="nav-item nav-link" href="{{ url_for('terms_and_conditions') }}">Terms and Conditions</a></th>
+            <th><a class="nav-item nav-link" href="{{ url_for('privacy_policy') }}">Privacy Policy</a></th>
+          </table>
+        </small>
+        </div>
+    </footer>
+    
 
 
     <!-- Optional JavaScript -->

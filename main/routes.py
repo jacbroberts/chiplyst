@@ -1,8 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request, abort
 from main import app, db, bcrypt, mail
 from main.forms import (RegistrationForm, LoginForm,
-    UpdateAccountForm, PostForm, RequestResetForm, ResetPasswordForm)
-from main.models import User, Post, Lists
+    UpdateAccountForm, PostForm, RequestResetForm, ResetPasswordForm, NewGroup)
+from main.models import User, Post, Lists, Groups
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
@@ -76,6 +76,7 @@ def account():
             current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
+        current_user.bio = form.bio.data
 
         db.session.commit()
         flash("your account has been updated!",'success')
@@ -83,6 +84,7 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.bio.data = current_user.bio
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=current_user.username).first_or_404()
     posts = Post.query.filter_by(author=user)\
@@ -103,6 +105,20 @@ def new_post():
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Post', form=form,
     legend='New Post')
+
+@app.route("/newgroup", methods=['GET','POST'])
+@login_required
+def newgroup():
+    form = NewGroup()
+    if form.validate_on_submit():
+        group = Groups(groupname=form.groupname.data, group_admin=current_user.username, 
+            group_access=bool(form.public.data), group_profilepic=form.picture.data)
+        db.session.commit()
+        group.member.append(current_user)
+        db.session.commit()
+        flash('Your group has successfully been created!','success')
+        return redirect(url_for('groups'))
+    return render_template('new_group.html', title='New Group',form=form, legend='New Group')
 
 @app.route("/post/<int:post_id>")
 def post(post_id):
@@ -193,17 +209,34 @@ def reset_token(token):
 @app.route('/groups', methods=['GET','POST'])
 @login_required
 def groups():
-    return render_template('groups.html', title='Groups')
+    page = request.args.get('page', 1, type=int)
+    groups = Groups.query.order_by(Groups.groupname).paginate(page=page,per_page=10)
+    return render_template('groups.html', title='Groups', groups=groups)
+
+@app.route('/groups/<string:group>', methods=['GET','POST'])
+@login_required
+def group_page(group):
+    groupinfo = Groups.query.filter_by(groupname=group).first_or_404()
+    return render_template('grouppage.html', title='Groups '+group, groupinfo=groupinfo)
+
 
 @app.route('/lists', methods=['GET','POST'])
 @login_required
 def lists():
+    
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=current_user.username).first_or_404()
     lists = Lists.query.filter_by(author=user)\
         .order_by(Lists.date_posted.desc())\
         .paginate(page=page, per_page=5)
     return render_template('lists.html', title='Chips', lists=lists, user=user)
+
+@app.route('/finduser', methods=['GET','POST'])
+def finduser():
+    page = request.args.get('page', 1, type=int)
+    users = User.query.order_by(User.username).paginate(page=page, per_page=10)
+    return render_template('finduser.html',title='Find User',users=users)
+
 
 @app.route('/privacy_policy')
 def privacy_policy():

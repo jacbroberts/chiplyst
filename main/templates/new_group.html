@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="content-section">
+    <form method="POST", action="",enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4"> Create your group today!</legend>
+        
+        <div class="form-group">
+          {{ form.groupname.label(class="form-control-label") }}
+
+          {% if form.groupname.errors %}
+            {{ form.groupname(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for errors in form.groupname.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.groupname(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        
+        <div class="form-group">
+          {{ form.bio.label(class="form-control-label") }}
+          {% if form.bio.errors %}
+            {{ form.bio(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for errors in form.bio.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.bio(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.picture.label() }}
+            {{ form.picture(class="form-control-file") }}
+            {% if form.picture.errors %}
+                {% for error in form.picture.errors %}
+                    <span class="text-danger">{{ error }}</span></br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.public.label(class="form-control-label") }}
+          {{ form.public }}
+        </div>
+
+      </fieldset>
+      <div class="form-group">
+        {{ form.submit(class="btn btn-outline-info") }}
+      </div>
+    </form>
+  </div>
+  <div class="border-top pt-3">
+    <small class="text-muted">
+      Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
+    </small>
+  </div>
+{% endblock content %}

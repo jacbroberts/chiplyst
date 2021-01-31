@@ -4,6 +4,7 @@
 
 {% block content %}
 <h1> Groups </h1>
+  <a href="{{ url_for('newgroup') }}">New Group</a>
   <p> Under Construction : groups is a new feature that will allow user to collaborate
   <p> potential features: </p>
   <p> ...Public and private groups</p>
@@ -12,4 +13,23 @@
   <p> ...Shared lists</p>
   <p> ...Group messaging</p>
   <p> ...</p>
+
+  {% for group in groups.items %}
+    <article class="media content-section">
+
+      <div class="media-body">
+        <div class="article-metadata">
+          <h3><a href="{{ url_for('group_page', group=group.groupname) }}">{{ group.groupname }}</a></h3> 
+          <p>Group Owner: {{group.group_admin}}</p>
+        </div>
+        
+        <p>Group Bio: {{group.group_bio}} </p>
+        {% for member in group.member %}
+          <h4>Members:</h4>
+          <p>{{member.username}}</p>
+        {%endfor%}
+      </div>
+    </article>
+  {% endfor %}
+
 {% endblock %}
