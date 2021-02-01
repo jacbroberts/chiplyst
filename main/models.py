@@ -5,8 +5,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 memberships = db.Table('memberships',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('groups_id',db.Integer, db.ForeignKey('groups.id')),
-    db.Column('user_level', db.String, default='0')
+    db.Column('groups_id',db.Integer, db.ForeignKey('groups.id'))
     )
 
 @login_manager.user_loader
@@ -53,7 +52,10 @@ class Groups(db.Model):
         return f"Groups('{self.groupname}','{self.group_admin}',)"
 
 class GroupRoles(db.Model):
-    pass
+    id = db.Column(db.Integer, primary_key=True)
+    member_id = db.Column(db.String(20), nullable=False)
+    group_id = db.Column(db.String(40), nullable=False)
+    access_level = db.Column(db.Integer,nullable=False, default=0)
 
 class Lists(db.Model):
     id = db.Column(db.Integer, primary_key=True)
