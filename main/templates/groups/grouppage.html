@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1> {{ groupinfo.groupname }}</h1>
+<p>{{groupinfo.group_bio}}</p>
     {% for member in groupinfo.member %}
         <h4>Members:</h4>
         <table>
@@ -11,7 +12,7 @@
             </tr>
             <tr>
                 <td>{{member.username}}</td>
-                <td>{{member.user_level}}</td>
+                <td></td>
             </tr>
         </table>
         <p></p>

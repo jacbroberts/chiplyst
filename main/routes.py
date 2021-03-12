@@ -112,7 +112,7 @@ def newgroup():
     form = NewGroup()
     if form.validate_on_submit():
         group = Groups(groupname=form.groupname.data, group_admin=current_user.username, 
-            group_access=bool(form.public.data), group_profilepic=form.picture.data)
+            group_access=bool(form.public.data), group_profilepic=form.picture.data, group_bio=form.bio.data)
         db.session.commit()
         group.member.append(current_user)
         db.session.commit()
@@ -217,7 +217,7 @@ def groups():
 @login_required
 def group_page(group):
     groupinfo = Groups.query.filter_by(groupname=group).first_or_404()
-    return render_template('grouppage.html', title='Groups '+group, groupinfo=groupinfo)
+    return render_template('grouppage.html', title='Groups '+group, groupinfo=groupinfo, memberships=memberships)
 
 
 @app.route('/lists', methods=['GET','POST'])
